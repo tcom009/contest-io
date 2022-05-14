@@ -19,7 +19,7 @@ const PlayersForm = () => {
   return (
     <>
       <div className='column '>
-        <div className='is-flex has-text-white is-size-4 mb-4'>
+        <div className='has-text-white is-size-4 mb-4 has-text-centered	 '>
           Inicia un nuevo juego
         </div>
         <div className='mb-3'>
@@ -61,7 +61,7 @@ const PlayersForm = () => {
         )}
         {addPlayer && (
           <>
-            <div className='columns mb-3'>
+            <div className='container mt-3'>
               <Input
                 name='player3'
                 register={register}
@@ -70,14 +70,19 @@ const PlayersForm = () => {
                 isRequired={true}
                 errorMessage={get(errors.playerThree, 'message')}
               />
-              <div className='columns ml-1 is-vcentered'>
-                <button
-                  className='button is-ghost is-vcentered'
-                  onClick={() => setAddPlayer(false)}
-                >
-                  <FontAwesomeIcon icon={faTimes} color={'red'} size={'lg'} />
-                </button>
-              </div>
+
+              <button
+                className='button is-danger is-outlined is-small my-3 is-pulled-right'
+                onClick={() => setAddPlayer(false)}
+              >
+                <FontAwesomeIcon
+                  icon={faTimes}
+                  className='mr-1'
+                  color={'red'}
+                  size={'sm'}
+                />
+                Remover
+              </button>
             </div>
           </>
         )}
