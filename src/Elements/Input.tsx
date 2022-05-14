@@ -1,6 +1,6 @@
 import React, { FC, InputHTMLAttributes } from 'react';
 
-//interface InputProps{
+
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   register: any;
   label?: string;
@@ -50,6 +50,7 @@ const Input: FC<InputProps> = ({
               ? 'input is-danger is-normal'
               : 'input is-normal is-focused'
           }${className}`}
+          {...rest}
           {...(register && {
             ...register(registerVal, handleIsRequired()),
           })}

@@ -1,9 +1,14 @@
 import { get } from 'lodash';
-import { useForm } from 'react-hook-form';
+import Select from 'react-select';
+import { useForm, Controller } from 'react-hook-form';
 import Input from '../Elements/Input.tsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import Label from '../Elements/Label';
+import ErrorSpan from '../Elements/ErrorSpan';
+const refferees = ['Chaos', 'FishTail', 'Poison', 'AK'];
+
 const PlayersForm = () => {
   const [addPlayer, setAddPlayer] = useState(false);
   const {
@@ -14,16 +19,58 @@ const PlayersForm = () => {
   } = useForm();
   const onSubmit = (data) => {
     console.log(data);
+    for (const key in data) {
+      if (key !== 'refferee') {
+        const str1 = data[key].slice(1).toLowerCase();
+        const str2 = data[key].charAt(0).toUpperCase() + str1;
+        data[key] = str2;
+      }
+      console.log(data);
+    }
   };
 
+  useEffect(() => {
+    console.log(errors);
+  });
+  const customStyles = {
+    container: () => ({ background: 'white', borderRadius: '30px' }),
+    option: (provided, state) => ({
+      ...provided,
+      color: 'black',
+    }),
+  };
   return (
     <>
       <div className='column '>
         <div className='has-text-white is-size-4 mb-4 has-text-centered	 '>
           Inicia un nuevo juego
         </div>
+
+        <div className='container mb-3'>
+          <Label caption='Arbitro' isRequired />
+
+          <Controller
+            name='refferee'
+            control={control}
+            rules={{ required: 'Selecciona un Arbitro' }}
+            render={({ field: { onChange } }) => (
+              <Select
+                styles={customStyles}
+                onChange={(e) => onChange(e.label)}
+                options={refferees.map((refferee) => ({
+                  value: refferee,
+                  label: refferee,
+                }))}
+                placeholder='Arbitro'
+              />
+            )}
+          />
+          <ErrorSpan errorMessage={get(errors, 'refferee.message')} />
+        </div>
+
         <div className='mb-3'>
           <Input
+            placeholder='Jugador 1'
             name='player1'
             type='text'
             register={register}
@@ -35,6 +82,7 @@ const PlayersForm = () => {
         </div>
         <div className=' mb-3'>
           <Input
+            placeholder='Jugador 2'
             name='player2'
             register={register}
             label='Jugador 2'
@@ -43,9 +91,11 @@ const PlayersForm = () => {
             errorMessage={get(errors.playerTwo, 'message')}
           />
         </div>
+
+        {/* Add a third player section */}
         {!addPlayer && (
           <button
-            className='button is-ghost mb-3'
+            className='button is-ghost mb-1'
             onClick={() => {
               setAddPlayer(true);
             }}
@@ -63,6 +113,7 @@ const PlayersForm = () => {
           <>
             <div className='container mt-3'>
               <Input
+                placeholder='Jugador 3'
                 name='player3'
                 register={register}
                 label='Jugador 3'
