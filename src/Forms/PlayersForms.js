@@ -7,8 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Label from '../Elements/Label';
 import ErrorSpan from '../Elements/ErrorSpan';
-const refferees = ['Chaos', 'FishTail', 'Poison', 'AK'];
-
+import Passphrases from '../data/passphrases.json';
 const PlayersForm = () => {
   const [addPlayer, setAddPlayer] = useState(false);
   const {
@@ -16,16 +15,37 @@ const PlayersForm = () => {
     control,
     formState: { errors },
     handleSubmit,
+    setError,
   } = useForm();
+
+  const refferees = Passphrases[4];
+  const verifyPassphrase = (refferee, passphrase) => {
+    const passphrases = [...Passphrases];
+    const verification = false;
+    passphrases.map((user) => {
+      Object.entries(user).map((pass) => {
+        if (refferee === pass[0]) {
+          if (passphrase === pass[1]) {
+            return (verification = true);
+          }
+        }
+      });
+    });
+    return verification;
+  };
   const onSubmit = (data) => {
     console.log(data);
     for (const key in data) {
-      if (key !== 'refferee') {
+      if (key !== 'refferee' && key !== 'passphrase') {
         const str1 = data[key].slice(1).toLowerCase();
         const str2 = data[key].charAt(0).toUpperCase() + str1;
         data[key] = str2;
       }
       console.log(data);
+      const isVerified = verifyPassphrase(data.refferee, data.passphrase);
+      if (!isVerified) {
+        setError('passphrase', { message: 'Pass incorrecto' });
+      }
     }
   };
 
@@ -66,6 +86,19 @@ const PlayersForm = () => {
             )}
           />
           <ErrorSpan errorMessage={get(errors, 'refferee.message')} />
+        </div>
+
+        <div className=' mb-3'>
+          <Input
+            placeholder='Passphrase'
+            type='password'
+            name='passphrase'
+            register={register}
+            label='Pass'
+            registerVal='passphrase'
+            isRequired={true}
+            errorMessage={get(errors, 'passphrase.message')}
+          />
         </div>
 
         <div className='mb-3'>
@@ -121,7 +154,6 @@ const PlayersForm = () => {
                 isRequired={true}
                 errorMessage={get(errors.playerThree, 'message')}
               />
-
               <button
                 className='button is-danger is-outlined is-small my-3 is-pulled-right'
                 onClick={() => setAddPlayer(false)}
